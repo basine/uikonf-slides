@@ -15,10 +15,13 @@
           SF-ADJUSTMENT  "Speaker Font size"     '(50 1 1000 1 10 0 1)
 		  SF-COLOR       "Foreground Color"   '(23 116 222)
 		  SF-COLOR       "Background Color"   '(255 255 255)
+		  SF-DIRNAME	 "Output Directory"   gimp-data-directory
 )
 (script-fu-menu-register "script-fu-bauchbinde" "<Image>/File/Create/Slides")
 
-(define (script-fu-bauchbinde inWidth inHeight inFont inTitleFontSize inSpeakerFontSize inFGColor inBGColor)
+(script-fu-bauchbinde 1 1920 1080 "AntennaExtraCond Bold Extra-Condensed" '(65 1 1000 1 10 0 1) '(50 1 1000 1 10 0 1) '(23 116 222) '(255 255 255) "/Users/sabinegeithner/Desktop/")
+
+(define (script-fu-bauchbinde inWidth inHeight inFont inTitleFontSize inSpeakerFontSize inFGColor inBGColor outputDirectory)
 	(let * (
   	  (talkList '('()'()))
   	  (aTitle "")
@@ -28,22 +31,24 @@
 	  		
 	)
 	(set! talkList (list 
-		(list "Monday" "2" "YOLO Releases Considered Harmful" "Cate Huston")
-		(list "Monday" "3" "Review All The Things!" "Maciej Piotrowski")
-		(list "Monday" "5" "High Performance App Architecture" "Marcel Weiher")
-		(list "Monday" "6" "Reactive Programming From Scratch" "Thomas Visser")
-		(list "Monday" "8" "Good Typography, Better Apps" "Frank Rausch")
-		(list "Monday" "9" "Unsophisticated Software Development" "Andreas Oetjen")
-		(list "Monday" "10" "An iOS Developer’s Take on React Native" "Harry Tormey")
-		(list "Monday" "12" "Developing Empathy" "Sarah E Olson")
-		(list "Tuesday" "1" "Coding While Afraid" "Gwen Weston")
-		(list "Tuesday" "2" "Move Fast and Keep Your Code Quality" "Francisco Díaz")
-		(list "Tuesday" "4" "Strong Typing from the Server to the UI with GraphQL" "Martijn Walraven")
-		(list "Tuesday" "5" "Code Generation in Swift — Gain Time, Type Safety and More!" "Olivier Halligon")
-		(list "Tuesday" "7" "Applying Functional Insights without Losing Swift" "Rob Napier")
-		(list "Tuesday" "8" "Anything You Can Do, I Can Do Better" "Brandon Williams & Lisa Luo")
-		(list "Tuesday" "9" "Auto Layout — From Trailing to Leading" "Mischa Hildebrand")
-		(list "Tuesday" "11" "Accessibility — iOS for All" "Sommer Panage")
+		;(list "Monday" "2" "Inclusive and Accessible App Development" "Kaya Thomas")
+		;(list "Monday" "3" "Detangling Gesture Recognizers" "Shannon Hughes")
+		;(list "Monday" "5" "Rolling your own Network Stack" "Glenna Buford")
+		;(list "Monday" "6" "Declarative Presentations" "Nataliya Patsovska")
+		;(list "Monday" "8" "Internationalizing your App" "Kristina Fox")
+		;(list "Monday" "9" "Mockolo: Efficient Mock Generator for Swift " "Ellie Shin")
+		;(list "Monday" "10" "Consistency Principle" "Julie Yaunches")
+		;(list "Monday" "12" "How to Market Your Mobile App" "Lisa Dziuba")
+		;(list "Monday" "13" "Swift to Hack Hardware" "Sally Shepard")
+		;(list "Tuesday" "2" "From Heroic Leaders To High Performing Teams" "Füsun Wehrmann")
+		;(list "Tuesday" "3" "Swift 5 Strings" "Erica Sadun")
+		;(list "Tuesday" "5" "Kotlin/Native" "Ellen Shapiro")
+		;(list "Tuesday" "6" "A11y-oop: Adding new Accessibility Features to not-so-new Apps" "Alaina Kafkes")
+		;(list "Tuesday" "8" "Advanced Colors in iOS" "Neha Kulkarni")
+		;(list "Tuesday" "9" "Promises in iOS" "Anne Cahalan")
+		;(list "Tuesday" "10" "Muse Prototype Challenges" "Julia Roggatz")
+		;(list "Tuesday" "12" "What to expect when you are templating? Clue’s approach to Backend Driven UIs" "Kate Castellano")
+		;(list "Tuesday" "13" "Mobile && Me == It's Complicated" "Lea Marolt")
 	 ) )
 	
 	(map (lambda (talk) 
@@ -52,7 +57,7 @@
 		   (set! aTitle (caddr talk))
 		   (set! aSpeaker (cadddr talk))
 		   
-		   (script-fu-bauchbinde-single aDay aSlot inWidth inHeight aTitle aSpeaker inFont inTitleFontSize inSpeakerFontSize inFGColor inBGColor)
+		   (script-fu-bauchbinde-single aDay aSlot inWidth inHeight aTitle aSpeaker inFont inTitleFontSize inSpeakerFontSize inFGColor inBGColor outputDirectory)
 	      )
 		talkList
 	)
@@ -80,9 +85,10 @@
           SF-ADJUSTMENT  "Speaker Font size"     '(90 1 1000 1 10 0 1)
 		  SF-COLOR       "Foreground Color"   '(255 255 255)
 		  SF-COLOR       "Background Color"   '(255 255 255)
+		  SF-DIRNAME	 "Output Directory"   gimp-data-directory
 )
 
-(define (script-fu-bauchbinde-single inDay inSlot inWidth inHeight inTitle inSpeaker inFont inTitleFontSize inSpeakerFontSize inFGColor inBGColor)
+(define (script-fu-bauchbinde-single inDay inSlot inWidth inHeight inTitle inSpeaker inFont inTitleFontSize inSpeakerFontSize inFGColor inBGColor outputDirectory)
   (let*
     (
       ; define our local variables
@@ -118,7 +124,7 @@
                     )
                 )
       )
-	    (theUIKonfShapeLayer
+	  (theUIKonfShapeLayer
 	                    (car
 		                    (gimp-layer-new
 		                      theImage
@@ -131,6 +137,7 @@
 		                    )
 	                    )
 	          	  )
+	   (drawable)
   	)
 	
 
@@ -162,9 +169,14 @@
 	(script-fu-add-textlayer-left-align theImage inBGColor "UIKonf" inFont 70 80 870)
 	
     (gimp-display-new theImage)
-    (list theImage theBackgroundLayer theUIKonfShapeLayer)
-	(gimp-file-save RUN-NONINTERACTIVE theImage theBackgroundLayer (string-append "/Users/sabinegeithner/Desktop/" (number->string inWidth) "x" (number->string inHeight) "/Bauchbinden/" inDay "-" inSlot "-" inSpeaker "-"  (number->string inWidth) "x" (number->string inHeight) ".psd") "?")
-		
+
+	(gimp-file-save RUN-NONINTERACTIVE theImage theBackgroundLayer (string-append outputDirectory "/" inDay "-" inSlot "-" inSpeaker "-"  (number->string inWidth) "x" (number->string inHeight) ".psd") "?")
+	
+	(gimp-image-merge-visible-layers theImage CLIP-TO-IMAGE)
+	(set! drawable (car (gimp-image-get-active-layer theImage)))
+	
+	(gimp-file-save RUN-NONINTERACTIVE theImage drawable (string-append outputDirectory "/" inDay "-" inSlot "-" inSpeaker "-"  (number->string inWidth) "x" (number->string inHeight) ".png") "?")
+	;(gimp-image-delete theImage)		
   )
 )
 
